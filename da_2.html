@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ERLEtek bygger en mobil robot, der 3D-printer mure direkte på byggepladsen.">
+<meta name="theme-color" content="#05080b">
+<title>ERLEtek: Robotter, der bygger mure</title>
+<link rel="icon" href="erle-icon.png">
+<link rel="alternate" hreflang="en" href="https://erletek.io/">
+<link rel="alternate" hreflang="da" href="https://erletek.io/da">
+<link rel="alternate" hreflang="x-default" href="https://erletek.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* ERLEtek site styles, matched to the pitch deck (Oct 2026) */
+  :root{
+    --green:#02ad6d;
+    --green-deep:#0a5c3b;
+    --lime:#cdf68b;
+    --mint:#cde9de;
+    --mint-2:#e3f3ec;
+    --charcoal:#212121;
+    --ink:#1b1d1b;
+    --ink-soft:#4a4e4a;
+    --ink-faint:#6f736f;
+    --paper:#f7f7f7;
+    --paper-2:#ededed;
+    --white:#ffffff;
+    --line:rgba(27,29,27,0.12);
+
+    --night:#05080b;
+    --night-ink:#eef3f0;
+    --night-soft:#a9b8b1;
+    --night-line:rgba(238,243,240,0.14);
+    --night-card:#111816;
+
+    --font-display:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --font-body:'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-mark:'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    --radius:20px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:80px;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); font-size:16.5px; line-height:1.6;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:var(--font-display); font-stretch:125%; font-weight:800; letter-spacing:-0.01em; line-height:1.08; text-wrap:balance; margin:0;}
+  p{margin:0;}
+  a{color:inherit;}
+  img,video{max-width:100%;}
+  .wrap{max-width:1160px; margin-inline:auto; padding-inline:20px;}
+
+  /* pill label, as on every deck slide */
+  .pill{
+    display:inline-block; background:var(--lime); color:var(--green-deep);
+    font-family:var(--font-display); font-stretch:125%; font-weight:700; font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:7px 14px; border-radius:8px; margin-bottom:18px;
+  }
+
+  /* ---------- header ---------- */
+  header.site{position:sticky; top:0; z-index:40; background:rgba(5,8,11,0.86); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--night-line); color:var(--night-ink);}
+  .navrow{display:flex; align-items:center; justify-content:space-between; gap:20px; padding-block:14px;}
+  .logo{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .logo svg{width:30px; height:auto; flex:none;}
+  .wordmark{font-family:var(--font-mark); font-weight:700; font-size:22px; letter-spacing:0.01em;}
+  .wordmark .erle{color:var(--green);}
+  .wordmark .tek{color:var(--white);}
+  nav.links{display:flex; align-items:center; gap:24px; margin-left:auto;}
+  nav.links a{font-size:14.5px; font-weight:500; text-decoration:none; color:var(--night-soft); padding-block:4px;}
+  nav.links a:hover{color:var(--white);}
+  nav.links a.navcta, #mobilenav a.navcta{
+    background:var(--lime); color:var(--charcoal); font-weight:700; padding:9px 18px; border-radius:999px; white-space:nowrap;
+  }
+  nav.links a.navcta:hover{filter:brightness(0.94); color:var(--charcoal);}
+  .burger{display:none; background:none; color:var(--night-ink); border:1px solid var(--night-line); border-radius:10px; padding:8px 10px; cursor:pointer;}
+  .burger svg{display:block;}
+  #mobilenav{display:none; flex-direction:column; gap:2px; padding-block:6px 16px;}
+  #mobilenav a{color:var(--night-soft); text-decoration:none; font-weight:500; padding:12px 4px; border-bottom:1px solid var(--night-line);}
+  #mobilenav a.navcta{border-bottom:none; margin-top:12px; align-self:flex-start; padding:11px 20px;}
+  #mobilenav.open{display:flex;}
+  @media (max-width:1080px){ nav.links{display:none;} .burger{display:block;} }
+
+  /* ---------- section shells ---------- */
+  section{padding-block:96px;}
+  .light{background:linear-gradient(180deg, var(--white) 0%, var(--paper-2) 100%);}
+  .light.flip{background:linear-gradient(180deg, var(--paper-2) 0%, var(--white) 100%);}
+  .dark{background:var(--night); color:var(--night-ink);}
+  .dark .pill{background:var(--lime); color:var(--green-deep);}
+  .section-head{max-width:760px; margin-bottom:48px;}
+  .section-head h2{font-size:clamp(28px,4vw,44px);}
+  .section-head .lede{margin-top:16px; color:var(--ink-soft); font-size:18px; max-width:60ch;}
+  .dark .section-head .lede{color:var(--night-soft);}
+  .row{display:flex; gap:56px; flex-wrap:wrap;}
+  .col{flex:1 1 340px; min-width:0;}
+  .prose p + p{margin-top:16px;}
+  .prose p{color:var(--ink-soft); max-width:62ch;}
+  .dark .prose p{color:var(--night-soft);}
+
+  /* ---------- space backdrop (deck cover) ---------- */
+  .space{
+    position:relative; overflow:hidden; isolation:isolate;
+    background:
+      radial-gradient(120% 70% at 50% 128%, rgba(2,173,109,0.55) 0%, rgba(20,70,67,0.55) 38%, rgba(10,23,38,0) 66%),
+      radial-gradient(80% 60% at 80% 0%, rgba(20,43,37,0.6) 0%, rgba(5,8,11,0) 70%),
+      var(--night);
+  }
+  .space::after{ /* thin bright horizon line */
+    content:""; position:absolute; left:-10%; right:-10%; bottom:-70%; height:80%; border-radius:50%;
+    border-top:2px solid rgba(158,208,218,0.55); box-shadow:0 -10px 60px rgba(2,173,109,0.35); z-index:-1; pointer-events:none;
+  }
+
+  @media (max-width:700px){ .space::after{left:-70%; right:-70%; bottom:-74%;} .hexframe .ring{inset:-8px;} }
+
+  /* ---------- hero ---------- */
+  .hero{padding-block:88px 120px;}
+  .hero-grid{display:flex; gap:56px; flex-wrap:wrap; align-items:center;}
+  .hero-copy{flex:1 1 480px; min-width:0;}
+  .hero h1{font-size:clamp(36px,5.6vw,68px); margin-bottom:24px; color:var(--white);}
+  .hero h1 .hl{color:var(--green);}
+  .hero-sub{font-size:clamp(16.5px,1.8vw,19px); color:var(--night-soft); max-width:50ch; margin-bottom:34px;}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:40px;}
+  .btn{
+    font-family:var(--font-body); font-weight:700; font-size:15px; text-decoration:none; border-radius:999px;
+    padding:14px 24px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid transparent; cursor:pointer;
+  }
+  .btn.lime{background:var(--lime); color:var(--charcoal);}
+  .btn.lime:hover{filter:brightness(0.94);}
+  .btn.outline-night{border-color:var(--night-line); color:var(--night-ink);}
+  .btn.outline-night:hover{border-color:var(--night-soft);}
+  .btn.dark{background:var(--charcoal); color:var(--white);}
+  .btn.dark:hover{background:#000;}
+  .credrow{display:flex; flex-wrap:wrap; gap:10px;}
+  .cred{font-size:13px; font-weight:600; color:var(--night-ink); border:1px solid var(--night-line); background:rgba(255,255,255,0.03); padding:8px 14px; border-radius:999px;}
+
+  .hero-media{flex:1 1 340px; min-width:260px; max-width:480px; margin-inline:auto;}
+  .hexframe{position:relative; aspect-ratio:1.155/1; width:100%;}
+  .hexframe video, .hexframe img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+    clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+  }
+  .hexframe .ring{position:absolute; inset:-14px; pointer-events:none;}
+  .hexframe .ring polygon{fill:none; stroke:var(--green); stroke-width:1.2; stroke-linejoin:round; opacity:0.75;}
+  .media-cap{font-size:12.5px; color:var(--night-soft); text-align:center; margin-top:18px; letter-spacing:0.02em;}
+
+  /* ---------- hexagon stat ---------- */
+  .hexstat{position:relative; width:250px; aspect-ratio:1.155/1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 46px;}
+  .hexstat svg{position:absolute; inset:0; width:100%; height:100%; z-index:0;}
+  .hexstat svg polygon{stroke-width:9; stroke-linejoin:round;}
+  .hexstat > *:not(svg){position:relative; z-index:1;}
+  .hexstat .num{font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:44px; line-height:1;}
+  .hexstat .lbl{font-size:14px; line-height:1.35; margin-top:10px;}
+  .hexstat.green svg polygon{fill:var(--green); stroke:var(--green);}
+  .hexstat.green{color:var(--white);}
+  .hexstat.lime svg polygon{fill:var(--lime); stroke:var(--lime);}
+  .hexstat.lime{color:var(--charcoal);}
+  .hexstat.coal svg polygon{fill:var(--charcoal); stroke:var(--charcoal);}
+  .hexstat.coal{color:var(--white);}
+  .hexstat.coal .num{color:var(--lime);}
+
+  .problem-art{display:flex; justify-content:center; align-items:center;}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--white); border-radius:var(--radius); padding:28px; box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 10px 30px -18px rgba(0,0,0,0.18);}
+  .card.mint{background:var(--mint); box-shadow:none;}
+
+  .spectable{width:100%; border-collapse:collapse; font-size:15px;}
+  .spectable tr + tr{border-top:1px solid var(--line);}
+  .spectable td{padding:13px 0; vertical-align:top;}
+  .spectable td:first-child{color:var(--ink-faint); font-size:12.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; width:42%; padding-right:16px; padding-top:15px;}
+  .spectable td:last-child{color:var(--ink); font-weight:600;}
+
+  .chiprow{display:flex; flex-wrap:wrap; gap:8px; margin-top:24px;}
+  .chip{font-size:13px; font-weight:600; color:var(--green-deep); background:var(--mint); border-radius:999px; padding:8px 14px;}
+
+  .photogrid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:48px;}
+  figure{margin:0;}
+  .photogrid img{width:100%; height:auto; display:block; border-radius:var(--radius);}
+  figcaption{font-size:13px; color:var(--ink-faint); margin-top:10px;}
+  @media (max-width:680px){ .photogrid{grid-template-columns:1fr;} }
+
+  /* ---------- see it print ---------- */
+  .videocard{border-radius:var(--radius); overflow:hidden; background:#000; box-shadow:0 30px 80px -40px rgba(2,173,109,0.55); border:1px solid var(--night-line);}
+  .videocard video{display:block; width:100%; aspect-ratio:16/9; height:auto;}
+  .dark figcaption{color:var(--night-soft);}
+
+  /* ---------- roadmap (deck "the path") ---------- */
+  .roadmap{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; position:relative; padding-top:30px;}
+  .roadmap::before{content:""; position:absolute; left:0; right:0; top:8px; height:2px; background:linear-gradient(90deg, var(--mint) 0%, var(--green) 100%);}
+  .step{position:relative; border-radius:16px; padding:22px 18px 24px; min-height:150px;}
+  .step::before{content:""; position:absolute; top:-29px; left:18px; width:14px; height:14px; border-radius:50%; background:var(--lime); border:3px solid var(--green);}
+  .step .when{display:block; font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:15px; letter-spacing:0.02em; margin-bottom:10px;}
+  .step p{font-size:14.5px; line-height:1.5;}
+  .step.s1{background:var(--mint-2); color:var(--ink);}
+  .step.s2{background:var(--mint); color:var(--ink);}
+  .step.s3{background:#8fd9b8; color:var(--ink);}
+  .step.s4{background:#3fbf8a; color:#04140c;}
+  .step.s5{background:var(--green); color:#04140c;}
+  .step .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:var(--charcoal); color:var(--lime); border-radius:6px; padding:3px 8px; margin-bottom:10px;}
+  @media (max-width:900px){
+    .roadmap{grid-template-columns:1fr; padding-top:0; padding-left:30px;}
+    .roadmap::before{left:8px; right:auto; top:0; bottom:0; width:2px; height:auto; background:linear-gradient(180deg, var(--mint) 0%, var(--green) 100%);}
+    .step{min-height:0;}
+    .step::before{top:24px; left:-29px;}
+  }
+
+  /* ---------- team ---------- */
+  .teamwrap{display:grid; grid-template-columns:1.25fr 1fr; gap:28px; align-items:stretch;}
+  .teamphoto img{width:100%; height:100%; object-fit:cover; border-radius:var(--radius); display:block; min-height:280px;}
+  .teamcards{display:flex; flex-direction:column; gap:14px;}
+  .member{display:flex; gap:16px; align-items:flex-start; background:var(--white); border-radius:16px; padding:18px 20px; box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 10px 30px -20px rgba(0,0,0,0.2);}
+  .member:nth-child(2){background:var(--charcoal); color:var(--white);}
+  .member:nth-child(2) p{color:#c9cdc9;}
+  .member:nth-child(2) .role{color:var(--lime);}
+  .badge{width:48px; height:42px; flex:none; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:15px; color:var(--white); background:var(--green); clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);}
+  .member h3{font-family:var(--font-body); font-stretch:100%; font-weight:700; font-size:17px; letter-spacing:0; line-height:1.3;}
+  .role{display:block; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--green-deep); margin:2px 0 6px;}
+  .member p{font-size:14.5px; color:var(--ink-soft); line-height:1.5;}
+  @media (max-width:860px){ .teamwrap{grid-template-columns:1fr;} }
+
+  /* ---------- contact ---------- */
+  .contact{padding-block:110px 150px; text-align:left;}
+  .contactcard{background:rgba(17,24,22,0.82); border:1px solid var(--night-line); border-radius:var(--radius); padding:34px; max-width:680px; backdrop-filter:blur(6px);}
+  .contactcard h3{font-family:var(--font-body); font-stretch:100%; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:12px;}
+  .contactcard p{color:var(--night-soft); margin-bottom:22px;}
+  .copyrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .iconbtn{font-family:var(--font-body); font-size:14px; font-weight:600; border:1.5px solid var(--night-line); background:transparent; color:var(--night-ink); border-radius:999px; padding:12px 18px; cursor:pointer;}
+  .iconbtn:hover{border-color:var(--night-soft);}
+  .investor-note{color:var(--night-soft); font-size:14px; margin-top:22px;}
+  .investor-note a{color:var(--night-ink); text-underline-offset:3px;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--night); color:var(--night-soft); border-top:1px solid var(--night-line); padding-block:40px 56px; font-size:13.5px;}
+  .footrow{display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;}
+  .fcol{display:flex; flex-direction:column; gap:6px;}
+  footer a{color:var(--night-soft); text-underline-offset:3px;}
+  footer a:hover{color:var(--white);}
+  .foottag{margin-top:26px; max-width:60ch;}
+
+  /* ---------- business case ---------- */
+  .casecard{padding:30px 30px 24px;}
+  .casetable{width:100%; border-collapse:collapse; font-size:16px;}
+  .casetable th{font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); text-align:left; padding:0 10px 12px 0;}
+  .casetable td{padding:16px 10px 16px 0; border-top:1px solid var(--line); color:var(--ink-faint);}
+  .casetable td:first-child{color:var(--ink-soft);}
+  .casetable tr.us td{background:var(--mint); color:var(--green-deep); font-weight:800; font-family:var(--font-display); font-stretch:125%; font-size:19px; border-top:none;}
+  .casetable tr.us td:first-child{border-radius:12px 0 0 12px; padding-left:14px; font-family:var(--font-body); font-stretch:100%; font-size:15.5px; font-weight:700;}
+  .casetable tr.us td:last-child{border-radius:0 12px 12px 0;}
+  .casenote{font-size:12.5px; color:var(--ink-faint); margin-top:14px;}
+  .hexpair{display:flex; justify-content:center; gap:18px; flex-wrap:wrap;}
+  .hexstat.sm{width:210px; padding:0 40px;}
+  .hexstat.sm .num{font-size:46px;}
+
+  /* ---------- on your site ---------- */
+  .factgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .fact{background:var(--white); border-radius:16px; padding:22px 20px; box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 10px 30px -20px rgba(0,0,0,0.2);}
+  .fact h3{font-family:var(--font-body); font-stretch:100%; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--green-deep); margin-bottom:8px;}
+  .fact p{font-size:15.5px; color:var(--ink); line-height:1.45;}
+  .fact.dark{background:var(--charcoal); grid-column:span 2;}
+  .fact.dark h3{color:var(--lime);}
+  .fact.dark p{color:#e3e6e3;}
+  @media (max-width:980px){ .factgrid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .factgrid{grid-template-columns:1fr;} .fact.dark{grid-column:auto;} }
+
+  /* ---------- contact extras ---------- */
+  .sendlist{margin:0 0 24px; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:8px;}
+  .sendlist li{font-size:14px; font-weight:600; color:var(--night-ink); background:rgba(205,246,139,0.1); border:1px solid rgba(205,246,139,0.3); border-radius:999px; padding:7px 13px;}
+  .contactwho{font-size:13.5px; color:var(--night-soft); margin:18px 0 0 !important;}
+  @media (max-width:520px){
+    .hexpair{flex-wrap:nowrap; gap:10px;}
+    .hexstat.sm{width:calc(50% - 5px); padding:0 22px;}
+    .hexstat.sm .num{font-size:32px;}
+    .hexstat.sm .lbl{font-size:12.5px; margin-top:6px;}
+  }
+
+  /* ---------- language switch ---------- */
+  .navright{display:flex; align-items:center; gap:14px;}
+  .langswitch{font-size:13px; font-weight:700; letter-spacing:0.04em; color:var(--night-ink); text-decoration:none; border:1px solid var(--night-line); border-radius:999px; padding:7px 12px; white-space:nowrap;}
+  .langswitch:hover{border-color:var(--night-soft);}
+  .langswitch span{color:var(--night-soft); font-weight:500;}
+  @media (max-width:520px){ .navright .backlink{display:none;} }
+
+  /* segmented EN | DA toggle (replaces the single-link switch) */
+  .langtoggle{display:inline-flex; align-items:center; gap:2px; padding:3px; border:1px solid var(--night-line); border-radius:999px; background:rgba(255,255,255,0.04);}
+  .langtoggle a, .langtoggle .lt-on{font-size:13px; font-weight:700; letter-spacing:0.06em; text-decoration:none; padding:6px 11px; border-radius:999px; line-height:1;}
+  .langtoggle a{color:var(--night-soft);}
+  .langtoggle a:hover{color:var(--white); background:rgba(255,255,255,0.08);}
+  .langtoggle .lt-on{background:var(--lime); color:var(--charcoal);}
+
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="navrow wrap">
+    <a class="logo" href="#top" aria-label="ERLEtek forside">
+      <svg viewBox="336 326 420 370" aria-hidden="true"><g fill="none" stroke="#02ad6d" stroke-width="16" stroke-linejoin="miter" stroke-linecap="butt"><path d="M652 676 H450 L352 509 L450 342 H643 L740 509 H548"/><path d="M523 470 L548 509 L523 548"/></g></svg>
+      <span class="wordmark"><span class="erle">ERLE</span><span class="tek">tek</span></span>
+    </a>
+    <nav class="links">
+      <a href="#business-case">Business case</a>
+      <a href="#machine">Maskinen</a>
+      <a href="#print">Se den arbejde</a>
+      <a href="#on-site">På pladsen</a>
+      <a href="#momentum">Status</a>
+      <a href="#team">Holdet</a>
+      <a href="beyond-earth-da.html">Ud over Jorden</a>
+      <a href="#contact" class="navcta">Kontakt os</a>
+    </nav>
+    <div class="navright">
+      <div class="langtoggle" role="group" aria-label="Language / Sprog"><a href="index.html" hreflang="en" lang="en" title="English">EN</a><span class="lt-on" aria-current="true" lang="da">DA</span></div>
+      <button class="burger" id="burgerBtn" aria-label="Åbn menu" aria-expanded="false" aria-controls="mobilenav">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 5H18M2 10H18M2 15H18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobilenav" class="wrap">
+    <a href="#business-case">Business case</a>
+    <a href="#machine">Maskinen</a>
+    <a href="#print">Se den arbejde</a>
+    <a href="#on-site">På pladsen</a>
+    <a href="#momentum">Status</a>
+    <a href="#team">Holdet</a>
+    <a href="beyond-earth-da.html">Ud over Jorden</a>
+    <a href="#contact" class="navcta">Kontakt os</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero space">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>En robot, der bygger mure direkte <span class="hl">på byggepladsen</span>.</h1>
+        <p class="hero-sub">Vores mobile robot printer mure på stedet og betjenes af jeres eget mandskab. Vi booker pilotprojekter til 2027.</p>
+        <div class="cta-row">
+          <a class="btn lime" href="#contact">Book en pilotsamtale</a>
+          <a class="btn outline-night" href="#business-case">Se business casen</a>
+        </div>
+        <div class="credrow">
+          <span class="cred">ESA BIC Denmark</span><span class="cred">DTU Skylab</span><span class="cred">Første projekt 2027</span>
+        </div>
+      </div>
+      <div class="hero-media">
+        <div class="hexframe">
+          <svg class="ring" viewBox="0 0 115.5 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="28.9,0.6 86.6,0.6 114.9,50 86.6,99.4 28.9,99.4 0.6,50"/></svg>
+          <video id="heroVideo" src="hero-loop.mp4" poster="hero-loop-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en lang mur udendørs"></video>
+        </div>
+        <p class="media-cap">Printer en mur udendørs på byggepladsen. Time-lapse.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="business-case" class="light">
+    <div class="wrap">
+      <span class="pill">Business casen</span>
+      <div class="section-head">
+        <h2>100 m mur.<br>En tredjedel af timerne.</h2>
+        
+      </div>
+      <div class="row" style="align-items:center;">
+        <div class="col">
+          <div class="card casecard">
+            <table class="casetable">
+              <thead><tr><th></th><th>Arbejdsdage</th><th>Mandetimer</th></tr></thead>
+              <tbody>
+                <tr><td>Traditionel metode</td><td class="tnum">7 dage</td><td class="tnum">120 t</td></tr>
+                <tr class="us"><td>ERLEtek-robot</td><td class="tnum">5 dage</td><td class="tnum">40 t</td></tr>
+              </tbody>
+            </table>
+            <p class="casenote">Estimat, mandskab på to medarbejdere.</p>
+          </div>
+        </div>
+        <div class="col hexpair">
+          <div class="hexstat green sm">
+            <svg viewBox="0 0 115.5 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="31,5 84.5,5 110,50 84.5,95 31,95 5.5,50"/></svg>
+            <div class="num">30%</div>
+            <div class="lbl"><strong>hurtigere</strong> byggeri</div>
+          </div>
+          <div class="hexstat lime sm">
+            <svg viewBox="0 0 115.5 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="31,5 84.5,5 110,50 84.5,95 31,95 5.5,50"/></svg>
+            <div class="num">70%</div>
+            <div class="lbl"><strong>færre mandetimer</strong> på pladsen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="machine" class="light flip">
+    <div class="wrap">
+      <span class="pill">Maskinen</span>
+      <div class="section-head">
+        <h2>Mobil. Modulær. Bygget til rigtigt terræn.</h2>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="prose">
+            <p>Robotten kommer til muren, ikke omvendt. Den printer på stedet i rigtigt terræn, mens jeres mandskab styrer pladsen og tager de opgaver, der kræver faglig vurdering.</p>
+          </div>
+          <div class="chiprow">
+            <span class="chip">Højvandsmure</span>
+            <span class="chip">Støttemure</span>
+            <span class="chip">Klimatilpasning</span>
+            <span class="chip">Havne- og kystmure</span>
+            <span class="chip">Landskabsarkitektur</span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <table class="spectable">
+              <tr><td>Murhøjde</td><td>Op til 2 m</td></tr>
+              <tr><td>Murtykkelse</td><td>10 – 40 cm</td></tr>
+              <tr><td>Pilotlængde</td><td>~100 m gentagen mur</td></tr>
+              <tr><td>Materialer</td><td>Fleksibelt materialevalg</td></tr>
+              <tr><td>Klar til brug</td><td>Q2/Q3 2027</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="photogrid">
+        <figure>
+          <img src="machine-nozzle.jpg" alt="Printerens tragt og dyse set bagfra, mens den lægger en betonstreng." loading="lazy">
+          <figcaption>Printerhovedet set bagfra, mens det lægger materialet.</figcaption>
+        </figure>
+        <figure>
+          <img src="machine-extrusion.jpg" alt="Nærbillede af printerhovedet, der former en frisk betonmur lag for lag." loading="lazy">
+          <figcaption>Hver passage bygger et nyt lag på muren.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="print" class="dark">
+    <div class="wrap">
+      <span class="pill">På pladsen</span>
+      <div class="section-head">
+        <h2>Se den arbejde.</h2>
+        
+      </div>
+      <figure>
+        <div class="videocard">
+          <video src="showcase.mp4" poster="showcase-poster.jpg" controls muted playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en lang mur udendørs"></video>
+        </div>
+        <figcaption>Time-lapse. I denne tidlige test blev robotten fyldt i hånden fra spande. På et projekt fyldes den direkte fra pladsens forsyning, fx en dumper.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="on-site" class="light">
+    <div class="wrap">
+      <span class="pill">På jeres byggeplads</span>
+      <div class="section-head">
+        <h2>Sådan kører den hos jer.</h2>
+        
+      </div>
+      <div class="factgrid">
+        <div class="fact">
+          <h3>Materialeforsyning</h3>
+          <p>Fyldes fra pladsens eksisterende forsyning, fx en dumper.</p>
+        </div>
+        <div class="fact">
+          <h3>Materialer</h3>
+          <p>Standardbeton og CO₂-reduceret beton.</p>
+        </div>
+        <div class="fact">
+          <h3>Mandskab</h3>
+          <p>To personer fra jeres eget hold.</p>
+        </div>
+        <div class="fact">
+          <h3>Underlag</h3>
+          <p>På bælter, bygget til ujævnt terræn.</p>
+        </div>
+        <div class="fact">
+          <h3>Mure</h3>
+          <p>Lige eller buede. Op til 2 m høje, 10–40 cm tykke.</p>
+        </div>
+        <div class="fact">
+          <h3>Proces</h3>
+          <p>Vores egen 3D-print med sprøjtebeton og vibrokomprimering.</p>
+        </div>
+        <div class="fact dark">
+          <h3>Dokumentation</h3>
+          <p>Officiel bæreevnetest med vand, okt. 2026, som grundlag for myndighedsdokumentationen til projekterne i 2027.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="momentum" class="light flip">
+    <div class="wrap">
+      <span class="pill">Status</span>
+      <div class="section-head">
+        <h2>Her er vi.</h2>
+      </div>
+      <div class="roadmap">
+        <div class="step s1">
+          <span class="when">DTU</span>
+          <p>Teknologi og første prototyper udviklet på DTU.</p>
+        </div>
+        <div class="step s2">
+          <span class="when">ESA BIC Denmark</span>
+          <p>Støttet af ESA’s inkubator i Danmark.</p>
+        </div>
+        <div class="step s3">
+          <span class="tag">Næste</span>
+          <span class="when">Okt. 2026</span>
+          <p>Bæreevnetest i Roskilde af en printet højvandsmur.</p>
+        </div>
+        <div class="step s4">
+          <span class="when">Q2/Q3 2027</span>
+          <p>Første projekt: en 100 m højvandsmur ved kysten.</p>
+        </div>
+        <div class="step s5">
+          <span class="when">2028</span>
+          <p>Kommercielt klar robot.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="light">
+    <div class="wrap">
+      <span class="pill">Holdet</span>
+      <div class="section-head">
+        <h2>Et hold, der kender byggepladsen, bygger teknologien og sælger den.</h2>
+      </div>
+      <div class="teamwrap">
+        <figure class="teamphoto">
+          <img src="team-founders.jpg" alt="ERLEteks tre medstiftere på DTU Skylab omkring printerrobotten.">
+        </figure>
+        <div class="teamcards">
+          <div class="member">
+            <div class="badge">PA</div>
+            <div>
+              <h3>Pablo Alberdi Pagola</h3>
+              <span class="role">CEO · Kender byggepladsen</span>
+              <p>Ph.d. i byggeri og anlæg. Tre år som byggeleder, før han var med til at stifte ERLEtek.</p>
+            </div>
+          </div>
+          <div class="member">
+            <div class="badge">JM</div>
+            <div>
+              <h3>Jonathan Mikler</h3>
+              <span class="role">CTO · Bygger robotterne</span>
+              <p>MSc i autonome systemer. Fem år med robotudvikling i landbrugsstartups.</p>
+            </div>
+          </div>
+          <div class="member">
+            <div class="badge">LO</div>
+            <div>
+              <h3>Lasse Olsen</h3>
+              <span class="role">COO · Sælger den</span>
+              <p>MSc i salgsledelse. Fem år i salg, heraf fire år hos Carlsberg.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:14px; font-size:13px; color:var(--ink-faint);">Foto fra venstre: Jonathan Mikler, Pablo Alberdi Pagola og Lasse Olsen på DTU Skylab.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="dark space contact">
+    <div class="wrap">
+      <span class="pill">Kontakt</span>
+      <div class="section-head">
+        <h2>Har I en mur, der skal bygges?</h2>
+      </div>
+      <div class="contactcard">
+        <h3>Til entreprenører og infrastrukturpartnere</h3>
+        <p>Send os det grundlæggende, så vender vi tilbage med, om det passer til et pilotprojekt i 2027.</p>
+        <ul class="sendlist">
+          <li>Murens længde og højde</li>
+          <li>Murtype</li>
+          <li>Placering og tidsplan</li>
+          <li>Tegninger, hvis I har dem</li>
+        </ul>
+        <div class="copyrow">
+          <a class="btn lime" href="mailto:lasse@erletek.io?subject=ERLEtek%20pilotprojekt&amp;body=Murl%C3%A6ngde%3A%0AMurh%C3%B8jde%3A%0AMurtype%3A%0APlacering%3A%0APlanlagt%20start%3A%0A">Send jeres projekt</a>
+          <a class="btn outline-night" href="tel:+4536204988">Ring +45 36 20 49 88</a>
+          <button class="iconbtn" type="button" data-copy="lasse@erletek.io" data-done="Kopieret">Kopiér e-mail</button>
+        </div>
+        <p class="contactwho">Lasse Olsen, COO · lasse@erletek.io</p>
+      </div>
+      <p class="investor-note">Investor? Skriv til <a href="mailto:lasse@erletek.io?subject=ERLEtek%20%E2%80%94%20Investor">lasse@erletek.io</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footrow">
+      <div class="fcol">
+        <span>ERLEtek ApS</span>
+        <span>DTU Skylab, Centrifugevej 374, 2800 Kongens Lyngby, Danmark</span>
+        <span>CVR DK45895661</span>
+      </div>
+      <div class="fcol">
+        <span><a href="mailto:lasse@erletek.io">lasse@erletek.io</a></span>
+        <span><a href="https://www.linkedin.com/company/erle-tek/" target="_blank" rel="noopener">LinkedIn</a></span>
+        <span><a href="beyond-earth-da.html">Ud over Jorden</a></span>
+      </div>
+    </div>
+    <p class="foottag">© 2026 ERLEtek. Robotter til det tunge, ensformige arbejde, på Jorden og på sigt uden for den.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var burger = document.getElementById('burgerBtn');
+  var nav = document.getElementById('mobilenav');
+  if(burger && nav){
+    burger.addEventListener('click', function(){
+      var open = nav.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); });
+    });
+  }
+
+  // respect reduced motion: show the poster instead of the looping hero video
+  var hv = document.getElementById('heroVideo');
+  if(hv && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    hv.removeAttribute('autoplay'); hv.pause();
+  }
+
+  document.querySelectorAll('.iconbtn[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var text = btn.getAttribute('data-copy');
+      var done = function(){ var old = btn.textContent; btn.textContent = btn.getAttribute('data-done') || 'Copied'; setTimeout(function(){ btn.textContent = old; }, 1500); };
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done).catch(function(){});
+        }
+      }catch(e){}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
