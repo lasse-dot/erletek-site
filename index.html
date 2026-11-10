@@ -311,6 +311,23 @@
   .strip2 img{width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:16px; display:block;}
   @media (max-width:860px){ .proofgrid{grid-template-columns:1fr;} .bigshot{min-height:0; aspect-ratio:3/2;} }
   @media (max-width:520px){ .strip2{grid-template-columns:1fr;} }
+
+  /* ---------- full-screen video landing (same as Beyond Earth), Earth horizon from the pitch-deck cover ---------- */
+  header.site{position:fixed; inset:0 0 auto 0; background:transparent; border-bottom-color:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; transition:background .3s, border-color .3s;}
+  header.site.solid, header.site.menu-open{background:rgba(5,8,11,0.88); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom-color:var(--night-line);}
+  .hero.full{position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; background:var(--night); padding:120px 0 clamp(150px,21vw,290px);}
+  .hero.full > video, .hero.full > .poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-3;}
+  .hero.full::before{content:""; position:absolute; inset:0; z-index:-2;
+    background:linear-gradient(180deg, rgba(5,8,11,0.8) 0%, rgba(5,8,11,0.25) 30%, rgba(5,8,11,0.5) 60%, rgba(5,8,11,0.85) 100%),
+               radial-gradient(90% 60% at 50% 120%, rgba(2,173,109,0.45) 0%, rgba(5,8,11,0) 60%);}
+  .hero.full::after{content:""; position:absolute; left:0; right:0; bottom:0; height:clamp(180px,27vw,360px); z-index:-1; pointer-events:none;
+    background:url("earth-horizon.jpg") center bottom / cover no-repeat;
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 38%); mask-image:linear-gradient(180deg, transparent 0%, #000 38%);}
+  .hero.full .earthfade{position:absolute; left:0; right:0; bottom:0; height:60px; z-index:-1; background:linear-gradient(180deg, rgba(5,8,11,0) 0%, var(--night) 100%); pointer-events:none;}
+  .hero.full h1{font-size:clamp(40px,7vw,96px); max-width:14ch;}
+  .hero.full .hero-sub{color:#e3e9e6;}
+  .hero.full .cred{background:rgba(5,8,11,0.35); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-color:rgba(238,243,240,0.25);}
+  .hero.full .btn.outline-night{background:rgba(5,8,11,0.25); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); border-color:rgba(238,243,240,0.4);}
 </style>
 <script data-goatcounter="https://erletek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -352,8 +369,12 @@
 </header>
 
 <main id="top">
-  <section class="hero space">
-    <div class="wrap hero-grid">
+  <section class="hero full">
+    <img class="poster" src="be-hero-poster.jpg" alt="">
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="be-hero-poster.jpg" aria-label="Time-lapse of the ERLEtek robot printing a wall on site in Roskilde">
+      <source src="be-hero.mp4" type="video/mp4">
+    </video>
+    <div class="wrap">
       <div class="hero-copy">
         <h1>A robot that lays walls, right <span class="hl">on site</span>.</h1>
         <p class="hero-sub">Our mobile robot prints walls on site, run by your own crew. Booking pilots for 2027.</p>
@@ -365,14 +386,8 @@
           <span class="cred">ESA BIC Denmark</span><span class="cred">DTU Skylab</span><span class="cred">Water-tested Nov 2026</span><span class="cred">First project 2027</span>
         </div>
       </div>
-      <div class="hero-media">
-        <div class="hexframe">
-          <svg class="ring" viewBox="0 0 115.5 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="28.9,0.6 86.6,0.6 114.9,50 86.6,99.4 28.9,99.4 0.6,50"/></svg>
-          <video id="heroVideo" src="hero-roskilde.mp4" poster="hero-roskilde-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Time-lapse of the ERLEtek robot printing a wall on site in Roskilde"></video>
-        </div>
-        <p class="media-cap">Printing an 11 m wall in Roskilde, October 2026.</p>
-      </div>
     </div>
+    <div class="earthfade"></div>
   </section>
 
   <section id="business-case" class="light">
@@ -664,11 +679,16 @@
     burger.addEventListener('click', function(){
       var open = nav.classList.toggle('open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.querySelector('header.site').classList.toggle('menu-open', open);
     });
     nav.querySelectorAll('a').forEach(function(a){
-      a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); });
+      a.addEventListener('click', function(){ nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); document.querySelector('header.site').classList.remove('menu-open'); });
     });
   }
+
+  var hdr = document.querySelector('header.site');
+  var onScroll = function(){ hdr.classList.toggle('solid', window.scrollY > 40); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
   // respect reduced motion: show the poster instead of the looping hero video
   var hv = document.getElementById('heroVideo');
