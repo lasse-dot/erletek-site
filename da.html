@@ -293,6 +293,24 @@
   .langtoggle a:hover{color:var(--white); background:rgba(255,255,255,0.08);}
   .langtoggle .lt-on{background:var(--lime); color:var(--charcoal);}
 
+
+  /* ---------- tested with water (Nov 2026) ---------- */
+  .proofgrid{display:grid; grid-template-columns:1.5fr 1fr; gap:18px;}
+  .bigshot{position:relative; border-radius:var(--radius); overflow:hidden; min-height:400px; margin:0;}
+  .bigshot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .bigshot .badge-lg{position:absolute; left:18px; bottom:18px; background:var(--lime); color:var(--green-deep); font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:clamp(18px,2.2vw,26px); padding:12px 18px; border-radius:12px;}
+  .stats{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .stat{background:var(--white); border-radius:16px; padding:20px 18px; display:flex; flex-direction:column; justify-content:flex-end; min-height:120px; box-shadow:0 1px 2px rgba(0,0,0,0.04), 0 10px 30px -20px rgba(0,0,0,0.2);}
+  .stat .num{font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:clamp(30px,3.4vw,42px); line-height:1; color:var(--charcoal);}
+  .stat .num small{font-size:0.5em; margin-left:4px; color:var(--ink-faint);}
+  .stat .lbl{font-size:14px; color:var(--ink-soft); margin-top:8px;}
+  .stat.hl{background:var(--green); box-shadow:none;}
+  .stat.hl .num, .stat.hl .num small, .stat.hl .lbl{color:#04140c;}
+  .strip2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px;}
+  .strip2 figure{margin:0;}
+  .strip2 img{width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:16px; display:block;}
+  @media (max-width:860px){ .proofgrid{grid-template-columns:1fr;} .bigshot{min-height:0; aspect-ratio:3/2;} }
+  @media (max-width:520px){ .strip2{grid-template-columns:1fr;} }
 </style>
 <script data-goatcounter="https://erletek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -344,15 +362,15 @@
           <a class="btn outline-night" href="#business-case">Se business casen</a>
         </div>
         <div class="credrow">
-          <span class="cred">ESA BIC Denmark</span><span class="cred">DTU Skylab</span><span class="cred">Første projekt 2027</span>
+          <span class="cred">ESA BIC Denmark</span><span class="cred">DTU Skylab</span><span class="cred">Vandtestet nov. 2026</span><span class="cred">Første projekt 2027</span>
         </div>
       </div>
       <div class="hero-media">
         <div class="hexframe">
           <svg class="ring" viewBox="0 0 115.5 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="28.9,0.6 86.6,0.6 114.9,50 86.6,99.4 28.9,99.4 0.6,50"/></svg>
-          <video id="heroVideo" src="hero-loop.mp4" poster="hero-loop-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en lang mur udendørs"></video>
+          <video id="heroVideo" src="hero-roskilde.mp4" poster="hero-roskilde-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en mur på pladsen i Roskilde"></video>
         </div>
-        <p class="media-cap">Bygger en mur på byggepladsen.</p>
+        <p class="media-cap">Printer en 11 m lang mur i Roskilde, oktober 2026.</p>
       </div>
     </div>
   </section>
@@ -446,10 +464,36 @@
       </div>
       <figure>
         <div class="videocard">
-          <video src="showcase.mp4" poster="showcase-poster.jpg" controls muted playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en lang mur udendørs"></video>
+          <video src="roskilde-timelapse.mp4" poster="roskilde-timelapse-poster.jpg" controls muted playsinline preload="metadata" aria-label="Time-lapse af ERLEtek-robotten, der printer en mur på pladsen i Roskilde"></video>
         </div>
-        <figcaption>Time-lapse. I denne tidlige test blev robotten fyldt i hånden fra spande. På et projekt fyldes den direkte fra pladsens forsyning, fx en dumper.</figcaption>
+        <figcaption>Testbyggeri i Roskilde, 29. oktober 2026. 100 minutters byggetid vist som time-lapse. I denne test blev robotten fyldt i hånden fra spande. På et projekt fyldes den direkte fra pladsens forsyning, fx en dumper.</figcaption>
       </figure>
+    </div>
+  </section>
+
+  <section id="tested" class="light flip">
+    <div class="wrap">
+      <span class="pill">Testet med vand</span>
+      <div class="section-head">
+        <h2>Så satte vi den under vand. Den holdt.</h2>
+      </div>
+      <div class="proofgrid">
+        <figure class="bigshot">
+          <img src="roskilde-water.jpg" alt="Vandet står tæt på toppen af den printede betonmur, med tør grund på den anden side." loading="lazy">
+          <span class="badge-lg">Holdt ved 75 cm</span>
+        </figure>
+        <div class="stats">
+          <div class="stat"><span class="num">11<small>m</small></span><span class="lbl">lang mur</span></div>
+          <div class="stat"><span class="num">80<small>cm</small></span><span class="lbl">høj</span></div>
+          <div class="stat"><span class="num">100<small>min</small></span><span class="lbl">byggetid på pladsen</span></div>
+          <div class="stat hl"><span class="num">75<small>cm</small></span><span class="lbl">vand, og den holdt</span></div>
+        </div>
+      </div>
+      <div class="strip2">
+        <figure><img src="roskilde-basin.jpg" alt="Overblik over den printede mur i det oversvømmede testbassin." loading="lazy"></figure>
+        <figure><img src="roskilde-layers.jpg" alt="Nærbillede af de printede betonlag." loading="lazy"></figure>
+      </div>
+      <p class="casenote">Vandtest i Roskilde, 5. november 2026. Vandet blev hævet trinvis fra 15 cm til 75 cm.</p>
     </div>
   </section>
 
@@ -487,7 +531,7 @@
         </div>
         <div class="fact dark">
           <h3>Dokumentation</h3>
-          <p>Officiel bæreevnetest med vand, okt. 2026, som grundlag for myndighedsdokumentationen til projekterne i 2027.</p>
+          <p>Vandtest bestået i Roskilde, nov. 2026: den printede mur holdt 75 cm vand. Dokumentation til projekterne i 2027.</p>
         </div>
       </div>
     </div>
@@ -509,11 +553,12 @@
           <p>Støttet af ESA’s inkubator i Danmark.</p>
         </div>
         <div class="step s3">
-          <span class="tag">Næste</span>
-          <span class="when">Okt. 2026</span>
-          <p>Bæreevnetest i Roskilde af en printet højvandsmur.</p>
+          <span class="tag">Klaret</span>
+          <span class="when">Okt./nov. 2026</span>
+          <p>Roskilde: 11 m mur printet, holdt 75 cm vand.</p>
         </div>
         <div class="step s4">
+          <span class="tag">Næste</span>
           <span class="when">Q2/Q3 2027</span>
           <p>Første projekt: en 100 m højvandsmur ved kysten.</p>
         </div>
