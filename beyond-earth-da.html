@@ -34,7 +34,7 @@
   .wrap{max-width:1200px; margin-inline:auto; padding-inline:20px;}
   .pill{display:inline-block; background:var(--lime); color:var(--green-deep); font-family:var(--font-display); font-stretch:125%; font-weight:700; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; padding:7px 14px; border-radius:8px; margin-bottom:18px;}
   .btn{font-weight:700; font-size:15px; text-decoration:none; border-radius:999px; padding:14px 24px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid transparent; cursor:pointer; font-family:var(--font-body);}
-  .btn.lime{background:var(--lime); color:var(--charcoal);}
+  .btn.lime{background:var(--green); color:#04140c;}
   .btn.lime:hover{filter:brightness(0.94);}
   .btn.ghost{border-color:rgba(238,243,240,0.4); color:var(--white,#fff); background:rgba(5,8,11,0.25); backdrop-filter:blur(6px);}
   .btn.ghost:hover{border-color:#fff;}
@@ -56,14 +56,18 @@
   @media (max-width:520px){ nav.links .backlink{display:none;} }
 
   /* hero: full-screen video */
-  .hero{position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; padding:120px 0 72px;}
+  .hero{position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; padding:120px 0 clamp(150px,21vw,290px);}
   .hero video, .hero .poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-3;}
   .hero::before{content:""; position:absolute; inset:0; z-index:-2;
-    background:linear-gradient(180deg, rgba(5,8,11,0.8) 0%, rgba(5,8,11,0.25) 30%, rgba(5,8,11,0.55) 65%, var(--night) 100%),
+    background:linear-gradient(180deg, rgba(5,8,11,0.8) 0%, rgba(5,8,11,0.25) 30%, rgba(5,8,11,0.5) 60%, rgba(5,8,11,0.85) 100%),
                radial-gradient(90% 60% at 50% 120%, rgba(2,173,109,0.45) 0%, rgba(5,8,11,0) 60%);}
-  .hero::after{content:""; position:absolute; left:-20%; right:-20%; bottom:-78%; height:90%; border-radius:50%; border-top:2px solid rgba(158,208,218,0.5); box-shadow:0 -10px 70px rgba(2,173,109,0.4); z-index:-1; pointer-events:none;}
+  /* Earth horizon from the pitch-deck cover, replacing the drawn arc */
+  .hero::after{content:""; position:absolute; left:0; right:0; bottom:0; height:clamp(180px,27vw,360px); z-index:-1; pointer-events:none;
+    background:url("earth-horizon.jpg") center bottom / cover no-repeat;
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 38%); mask-image:linear-gradient(180deg, transparent 0%, #000 38%);}
+  .hero .earthfade{position:absolute; left:0; right:0; bottom:0; height:60px; z-index:-1; background:linear-gradient(180deg, rgba(5,8,11,0) 0%, var(--night) 100%); pointer-events:none;}
   .hero h1{font-size:clamp(40px,7vw,96px); color:#fff; max-width:14ch; margin-bottom:28px;}
-  .hero h1 .hl{color:var(--lime);}
+  .hero h1 .hl{color:var(--green);}
   .goals{display:flex; flex-wrap:wrap; gap:10px 28px; margin-bottom:32px;}
   .goals h2{font-family:var(--font-body); font-stretch:100%; font-size:clamp(15px,1.6vw,18px); font-weight:600; letter-spacing:0; color:var(--night-ink); display:flex; align-items:center; gap:10px;}
   .goals h2::before{content:""; width:12px; height:10.4px; background:var(--green); clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); flex:none;}
@@ -95,12 +99,6 @@
   @keyframes build{0%,8%{opacity:0;} 22%,78%{opacity:1;} 92%,100%{opacity:0;}}
   @media (max-width:900px){ .tiles{grid-template-columns:1fr 1fr;} .tile.swarm{grid-column:span 2; aspect-ratio:16/9;} .tile.swarm svg{height:70%;} }
   @media (max-width:600px){ .tiles{grid-template-columns:1fr;} .tile, .tile.swarm{grid-column:auto; aspect-ratio:4/5;} }
-
-  /* film */
-  .film{background:linear-gradient(180deg, var(--night) 0%, var(--night-2) 100%);}
-  .filmcard{border-radius:var(--radius); overflow:hidden; border:1px solid var(--night-line); box-shadow:0 40px 100px -50px rgba(2,173,109,0.6); background:#000;}
-  .filmcard video{width:100%; aspect-ratio:16/9; height:auto;}
-  .filmcap{font-size:13px; color:var(--night-soft); margin-top:12px;}
 
   /* path */
   .path{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; position:relative; padding-top:34px;}
@@ -151,25 +149,6 @@
   .footrow{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
   footer a{color:var(--night-soft); text-underline-offset:3px;} footer a:hover{color:#fff;}
 
-  /* proof: Roskilde water test */
-  .proof{background:linear-gradient(180deg, var(--night) 0%, #071a1c 100%);}
-  .proofgrid{display:grid; grid-template-columns:1.6fr 1fr; gap:18px;}
-  .bigshot{position:relative; border-radius:var(--radius); overflow:hidden; border:1px solid var(--night-line); min-height:420px;}
-  .bigshot img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
-  .bigshot .badge{position:absolute; left:20px; bottom:20px; background:var(--lime); color:var(--green-deep); font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:clamp(18px,2.2vw,26px); padding:12px 18px; border-radius:12px;}
-  .stats{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  .stat{background:var(--night-card); border:1px solid var(--night-line); border-radius:16px; padding:20px 18px; display:flex; flex-direction:column; justify-content:flex-end; min-height:130px;}
-  .stat .num{font-family:var(--font-display); font-stretch:125%; font-weight:800; font-size:clamp(32px,3.6vw,44px); line-height:1; color:#fff;}
-  .stat .num small{font-size:0.5em; margin-left:4px; color:var(--night-soft);}
-  .stat .lbl{font-size:14px; color:var(--night-soft); margin-top:8px;}
-  .stat.hl{background:var(--green); border-color:var(--green);}
-  .stat.hl .num, .stat.hl .num small, .stat.hl .lbl{color:#04140c;}
-  .strip{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px;}
-  .strip figure{margin:0; border-radius:16px; overflow:hidden; border:1px solid var(--night-line); position:relative;}
-  .strip img{width:100%; aspect-ratio:4/3; object-fit:cover;}
-  .strip figcaption{position:absolute; left:0; right:0; bottom:0; padding:28px 14px 12px; font-size:13px; color:#e3e9e6; background:linear-gradient(180deg, rgba(5,8,11,0) 0%, rgba(5,8,11,0.85) 100%);}
-  @media (max-width:860px){ .proofgrid{grid-template-columns:1fr;} .bigshot{min-height:0; aspect-ratio:3/2;} .strip{grid-template-columns:1fr 1fr;} .strip figure:last-child{grid-column:span 2;} .strip figure:last-child img{aspect-ratio:16/9;} }
-  @media (max-width:520px){ .strip{grid-template-columns:1fr;} .strip figure:last-child{grid-column:auto;} .strip figure:last-child img{aspect-ratio:4/3;} }
   .moments.three{grid-template-columns:1.3fr 1fr 1fr;}
   @media (max-width:980px){ .moments.three{grid-template-columns:1fr 1fr;} .moments.three .moment.big{grid-column:span 2;} }
   @media (max-width:640px){ .moments.three{grid-template-columns:1fr;} .moments.three .moment.big{grid-column:auto;} }
@@ -196,8 +175,6 @@
     </a>
     <nav class="links">
       <a class="anchor" href="#tracks">Spor</a>
-      <a class="anchor" href="#proof">Bevis</a>
-      <a class="anchor" href="#film">Se den</a>
       <a class="anchor" href="#path">Vejen</a>
       <a class="anchor" href="#invest">Invester</a>
       <a class="backlink" href="da.html">&larr; erletek.io</a>
@@ -222,10 +199,11 @@
         <h2>Mange robotter, én konstruktion</h2>
       </div>
       <div class="ctarow">
-        <a class="btn lime" href="#film">Se den printe</a>
+        <a class="btn lime" href="da.html#print">Se den printe</a>
         <a class="btn ghost" href="#invest">Tal med os</a>
       </div>
     </div>
+    <div class="earthfade"></div>
     <span class="scrollhint">Scroll</span>
   </section>
 
@@ -267,63 +245,6 @@
     </div>
   </section>
 
-  <!-- PROOF: Roskilde water test, 5 Nov 2026 -->
-  <section class="proof" id="proof">
-    <div class="wrap">
-      <div class="head reveal">
-        <h2>Så satte vi den under vand.</h2>
-        <p>Vandtest i Roskilde, 5. november 2026.</p>
-      </div>
-      <div class="proofgrid">
-        <figure class="bigshot reveal" style="margin:0">
-          <img src="roskilde-water.jpg" alt="Vandet står tæt på toppen af den printede betonmur, med tør grund på den anden side." loading="lazy">
-          <span class="badge">Holdt ved 75 cm</span>
-        </figure>
-        <div class="stats reveal">
-          <div class="stat"><span class="num">11<small>m</small></span><span class="lbl">lang mur</span></div>
-          <div class="stat"><span class="num">80<small>cm</small></span><span class="lbl">høj</span></div>
-          <div class="stat"><span class="num">100<small>min</small></span><span class="lbl">byggetid på pladsen</span></div>
-          <div class="stat hl"><span class="num">75<small>cm</small></span><span class="lbl">vand, og den holdt</span></div>
-        </div>
-      </div>
-      <div class="strip">
-        <figure class="reveal"><img src="roskilde-basin.jpg" alt="Overblik over den printede mur i det oversvømmede testbassin." loading="lazy"><figcaption>Det oversvømmede bassin</figcaption></figure>
-        <figure class="reveal"><img src="roskilde-along.jpg" alt="Lav vinkel langs den printede mur med vand på den ene side." loading="lazy"><figcaption>Vand på den ene side</figcaption></figure>
-        <figure class="reveal"><img src="roskilde-layers.jpg" alt="Nærbillede af de printede betonlag." loading="lazy"><figcaption>Printede lag tæt på</figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- FILM -->
-  <section class="film" id="film">
-    <div class="wrap">
-      <div class="head reveal">
-        <h2>Se den printe.</h2>
-        <p>Roskilde, 29. oktober 2026. Time-lapse.</p>
-      </div>
-      <figure class="filmcard reveal" style="margin:0">
-        <video controls playsinline preload="metadata" poster="roskilde-timelapse-poster.jpg">
-          <source src="roskilde-timelapse.mp4" type="video/mp4">
-        </video>
-      </figure>
-    </div>
-  </section>
-
-  <!-- PATH -->
-  <section id="path">
-    <div class="wrap">
-      <div class="head reveal">
-        <h2>Vejen væk fra Jorden.</h2>
-      </div>
-      <div class="path reveal">
-        <div class="step done"><span class="when">Klaret</span><h3>Printet og vandtestet i Roskilde</h3></div>
-        <div class="step done"><span class="when">Klaret</span><h3>Test med regolit-simulant</h3></div>
-        <div class="step"><span class="when">Næste</span><h3>Test i rummiljø</h3></div>
-        <div class="step"><span class="when">På sigt</span><h3>Robotsværme uden for Jorden</h3></div>
-      </div>
-    </div>
-  </section>
-
   <!-- MOMENTS -->
   <section style="padding-top:0">
     <div class="wrap">
@@ -345,6 +266,21 @@
             <p>Vi tester vores vibrationsprint til byggeri med lokalt materiale.</p>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATH -->
+  <section id="path">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>Vejen væk fra Jorden.</h2>
+      </div>
+      <div class="path reveal">
+        <div class="step done"><span class="when">Klaret</span><h3>Printet og vandtestet i Roskilde</h3></div>
+        <div class="step done"><span class="when">Klaret</span><h3>Test med regolit-simulant</h3></div>
+        <div class="step"><span class="when">Næste</span><h3>Test i rummiljø</h3></div>
+        <div class="step"><span class="when">På sigt</span><h3>Robotsværme uden for Jorden</h3></div>
       </div>
     </div>
   </section>
