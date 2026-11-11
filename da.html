@@ -360,6 +360,15 @@
   .hero.full .cta-row{margin-bottom:22px; gap:10px;}
   .hero.full .btn{font-size:14px; padding:11px 20px;}
   .hero.full .cred{font-size:12px; padding:6px 12px;}
+
+  /* drone loop in the water-test section (Lasse, 11 Nov) */
+  .dronepair{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px;}
+  .dronepair .droneband{margin:0; aspect-ratio:16/9;}
+  @media (max-width:700px){ .dronepair{grid-template-columns:1fr;} .dronepair .droneband{aspect-ratio:16/10;} }
+  .droneband{position:relative; margin:18px 0 0; border-radius:var(--radius); overflow:hidden; aspect-ratio:16/7; background:var(--night);}
+  .droneband video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
+  .droneband figcaption{position:absolute; left:16px; bottom:14px; font-size:12px; font-weight:600; letter-spacing:0.04em; color:#eef3f0; background:rgba(5,8,11,0.45); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); padding:6px 11px; border-radius:999px;}
+  @media (max-width:700px){ .droneband{aspect-ratio:16/10;} }
 </style>
 <script data-goatcounter="https://erletek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -569,7 +578,7 @@
       </div>
       <div class="proofgrid">
         <figure class="bigshot">
-          <img src="roskilde-water.jpg" alt="Vandet står tæt på toppen af den printede betonmur, med tør grund på den anden side." loading="lazy">
+          <img src="roskilde-flood.jpg" alt="Den printede betonmur i det oversvømmede testbassin, med vandet lige under toppen." loading="lazy" style="object-position:35% 50%">
           <span class="badge-lg">Holdt ved 75 cm</span>
         </figure>
         <div class="stats">
@@ -579,11 +588,21 @@
           <div class="stat hl"><span class="num">75<small>cm</small></span><span class="lbl">vand, og den holdt</span></div>
         </div>
       </div>
+      <div class="dronepair">
+        <figure class="droneband">
+          <video src="roskilde-drone.mp4" poster="roskilde-drone-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Dronevideo langs den printede mur i det oversvømmede testbassin"></video>
+          <figcaption>Langs muren</figcaption>
+        </figure>
+        <figure class="droneband">
+          <video src="roskilde-drone-rise.mp4" poster="roskilde-drone-rise-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Dronen stiger fra den printede mur op over det oversvømmede bassin"></video>
+          <figcaption>Fra oven</figcaption>
+        </figure>
+      </div>
       <div class="strip2">
         <figure><img src="roskilde-basin.jpg" alt="Overblik over den printede mur i det oversvømmede testbassin." loading="lazy"></figure>
         <figure><img src="roskilde-layers.jpg" alt="Nærbillede af de printede betonlag." loading="lazy"></figure>
       </div>
-      <p class="casenote">Vandtest i Roskilde, 5. november 2026. Vandet blev hævet trinvis fra 15 cm til 75 cm.</p>
+      <p class="casenote">Vandtest i Roskilde, 5. november 2026. Vandet blev hævet trinvis fra 15 cm til 75 cm. Vand bag muren kom ind gennem de midlertidige afspærringer i enderne, ikke gennem den printede mur.</p>
     </div>
   </section>
 
@@ -769,7 +788,7 @@
   var hv = document.getElementById('heroVideo');
   if(hv && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     hv.removeAttribute('autoplay'); hv.pause();
-    document.querySelectorAll('.vmedia video').forEach(function(v){ v.removeAttribute('autoplay'); v.pause(); });
+    document.querySelectorAll('.vmedia video, .droneband video').forEach(function(v){ v.removeAttribute('autoplay'); v.pause(); });
   }
 
   document.querySelectorAll('.iconbtn[data-copy]').forEach(function(btn){
