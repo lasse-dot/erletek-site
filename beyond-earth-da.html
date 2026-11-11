@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ERLEtek ud over Jorden: en murprintende robot testet med regolit-simulant, del af ESA BIC Denmark.">
+<meta name="theme-color" content="#05080b">
+<title>ERLEtek: Ud over Jorden</title>
+<link rel="icon" href="erle-icon.png">
+<link rel="alternate" hreflang="en" href="https://erletek.io/beyond-earth">
+<link rel="alternate" hreflang="da" href="https://erletek.io/beyond-earth-da">
+<link rel="alternate" hreflang="x-default" href="https://erletek.io/beyond-earth">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* ERLEtek Beyond Earth, v4 (Nov 2026): video-first layout */
+  :root{
+    --green:#02ad6d; --green-deep:#0a5c3b; --lime:#cdf68b; --mint:#cde9de;
+    --charcoal:#212121; --night:#05080b; --night-2:#0a1416; --night-ink:#eef3f0;
+    --night-soft:#a9b8b1; --night-line:rgba(238,243,240,0.14); --night-card:#0f1917;
+    --font-display:'Archivo','Helvetica Neue',Arial,sans-serif;
+    --font-body:'Inter','Helvetica Neue',Arial,sans-serif;
+    --font-mark:'Montserrat','Helvetica Neue',Arial,sans-serif;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:72px;}
+  body{margin:0; background:var(--night); color:var(--night-ink); font-family:var(--font-body); font-size:16.5px; line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  h1,h2,h3{font-family:var(--font-display); font-stretch:125%; font-weight:800; letter-spacing:-0.01em; line-height:1.06; text-wrap:balance; margin:0;}
+  p{margin:0;}
+  a{color:inherit;}
+  img,video{max-width:100%; display:block;}
+  .wrap{max-width:1200px; margin-inline:auto; padding-inline:20px;}
+  .pill{display:inline-block; background:var(--lime); color:var(--green-deep); font-family:var(--font-display); font-stretch:125%; font-weight:700; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; padding:7px 14px; border-radius:8px; margin-bottom:18px;}
+  .btn{font-weight:700; font-size:15px; text-decoration:none; border-radius:999px; padding:14px 24px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid transparent; cursor:pointer; font-family:var(--font-body);}
+  .btn.lime{background:var(--green); color:#04140c;}
+  .btn.lime:hover{filter:brightness(0.94);}
+  .btn.ghost{border-color:rgba(238,243,240,0.4); color:var(--white,#fff); background:rgba(5,8,11,0.25); backdrop-filter:blur(6px);}
+  .btn.ghost:hover{border-color:#fff;}
+
+  /* header: transparent over the hero, solid once scrolled */
+  header.site{position:fixed; inset:0 0 auto 0; z-index:40; transition:background .3s, border-color .3s; border-bottom:1px solid transparent;}
+  header.site.solid{background:rgba(5,8,11,0.88); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom-color:var(--night-line);}
+  .navrow{display:flex; align-items:center; justify-content:space-between; gap:20px; padding-block:14px;}
+  .logo{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .logo svg{width:30px; height:auto;}
+  .wordmark{font-family:var(--font-mark); font-weight:700; font-size:22px;}
+  .wordmark .erle{color:var(--green);} .wordmark .tek{color:#fff;}
+  nav.links{display:flex; align-items:center; gap:26px; margin-left:auto;}
+  nav.links a{font-size:14.5px; font-weight:500; text-decoration:none; color:rgba(238,243,240,0.78);}
+  nav.links a:hover{color:#fff;}
+  .langswitch{font-size:13px; font-weight:700; color:var(--night-ink); text-decoration:none; border:1px solid rgba(238,243,240,0.3); border-radius:999px; padding:7px 12px;}
+  .langswitch:hover{border-color:#fff;}
+  @media (max-width:860px){ nav.links .anchor{display:none;} }
+  @media (max-width:520px){ nav.links .backlink{display:none;} }
+
+  /* hero: full-screen video */
+  .hero{position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; padding:120px 0 clamp(150px,21vw,290px);}
+  .hero video, .hero .poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-3;}
+  .hero::before{content:""; position:absolute; inset:0; z-index:-2;
+    background:linear-gradient(180deg, rgba(5,8,11,0.8) 0%, rgba(5,8,11,0.25) 30%, rgba(5,8,11,0.5) 60%, rgba(5,8,11,0.85) 100%),
+               radial-gradient(90% 60% at 50% 120%, rgba(2,173,109,0.45) 0%, rgba(5,8,11,0) 60%);}
+  /* Moon horizon (rendered for the site), replacing the drawn arc */
+  .hero::after{content:""; position:absolute; left:0; right:0; bottom:0; height:clamp(180px,27vw,360px); z-index:-1; pointer-events:none;
+    background:url("moon-horizon.jpg") center bottom / cover no-repeat;
+    -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 38%); mask-image:linear-gradient(180deg, transparent 0%, #000 38%);}
+  .hero .earthfade{position:absolute; left:0; right:0; bottom:0; height:60px; z-index:-1; background:linear-gradient(180deg, rgba(5,8,11,0) 0%, var(--night) 100%); pointer-events:none;}
+  .hero h1{font-size:clamp(40px,7vw,96px); color:#fff; max-width:14ch; margin-bottom:28px;}
+  .hero h1 .hl{color:var(--green);}
+  .goals{display:flex; flex-wrap:wrap; gap:10px 28px; margin-bottom:32px;}
+  .goals h2{font-family:var(--font-body); font-stretch:100%; font-size:clamp(15px,1.6vw,18px); font-weight:600; letter-spacing:0; color:var(--night-ink); display:flex; align-items:center; gap:10px;}
+  .goals h2::before{content:""; width:12px; height:10.4px; background:var(--green); clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); flex:none;}
+  .ctarow{display:flex; gap:12px; flex-wrap:wrap;}
+  .scrollhint{position:absolute; right:20px; bottom:28px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--night-soft);}
+  @media (max-width:700px){ .scrollhint{display:none;} }
+
+  section{padding-block:96px;}
+  .head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:40px;}
+  .head h2{font-size:clamp(30px,4.4vw,52px); color:#fff; max-width:16ch;}
+  .head p{color:var(--night-soft); max-width:42ch;}
+
+  /* three tracks: media tiles */
+  .tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .tile{position:relative; border-radius:var(--radius); overflow:hidden; aspect-ratio:3/4; background:var(--night-card); border:1px solid var(--night-line);}
+  .tile > video, .tile > img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .8s ease;}
+  .tile:hover > video, .tile:hover > img{transform:scale(1.04);}
+  .tile::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,8,11,0) 40%, rgba(5,8,11,0.92) 100%); pointer-events:none;}
+  .tile .cap{position:absolute; left:22px; right:22px; bottom:22px; z-index:1;}
+  .tile .tag{display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; background:var(--charcoal); color:var(--lime); border-radius:6px; padding:4px 9px; margin-bottom:12px;}
+  .tile .tag.done{background:var(--lime); color:var(--green-deep);}
+  .tile h3{font-size:24px; color:#fff; margin-bottom:6px;}
+  .tile p{font-size:15px; color:#d4ddd8;}
+  .tile.swarm{background:radial-gradient(80% 60% at 50% 35%, #12403a 0%, var(--night-card) 70%);}
+  .tile.swarm svg{position:absolute; inset:0; width:100%; height:72%;}
+  .swarm .cell{fill:none; stroke:rgba(2,173,109,0.35); stroke-width:1.2;}
+  .swarm .cell.on{fill:rgba(2,173,109,0.85); stroke:var(--green); animation:build 6s ease-in-out infinite;}
+  .swarm .bot{fill:var(--lime);}
+  @keyframes build{0%,8%{opacity:0;} 22%,78%{opacity:1;} 92%,100%{opacity:0;}}
+  @media (max-width:900px){ .tiles{grid-template-columns:1fr 1fr;} .tile.swarm{grid-column:span 2; aspect-ratio:16/9;} .tile.swarm svg{height:70%;} }
+  @media (max-width:600px){ .tiles{grid-template-columns:1fr;} .tile, .tile.swarm{grid-column:auto; aspect-ratio:4/5;} }
+
+  /* path */
+  .path{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; position:relative; padding-top:34px;}
+  .path::before{content:""; position:absolute; left:0; right:0; top:10px; height:2px; background:linear-gradient(90deg, var(--green) 0%, var(--green) 45%, rgba(2,173,109,0.25) 60%, rgba(2,173,109,0.1) 100%);}
+  .step{position:relative; border-radius:16px; padding:22px 20px; background:var(--night-card); border:1px solid var(--night-line);}
+  .step::before{content:""; position:absolute; top:-31px; left:20px; width:14px; height:14px; border-radius:50%; background:var(--night); border:3px solid rgba(2,173,109,0.5);}
+  .step.done::before{background:var(--lime); border-color:var(--green);}
+  .step .when{display:block; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:10px;}
+  .step:not(.done) .when{color:var(--night-soft);}
+  .step h3{font-size:19px; color:#fff;}
+  @media (max-width:860px){
+    .path{grid-template-columns:1fr; padding-top:0; padding-left:32px;}
+    .path::before{left:9px; right:auto; top:0; bottom:0; width:2px; height:auto; background:linear-gradient(180deg, var(--green) 0%, var(--green) 45%, rgba(2,173,109,0.15) 100%);}
+    .step::before{top:24px; left:-30px;}
+  }
+
+  /* moments */
+  .moments{display:grid; grid-template-columns:1.4fr 1fr; gap:18px;}
+  .moment{border-radius:var(--radius); overflow:hidden; background:var(--night-card); border:1px solid var(--night-line); display:flex; flex-direction:column;}
+  .moment img{width:100%; aspect-ratio:16/9; object-fit:cover;}
+  .moment .body{padding:20px 22px 24px;}
+  .moment .date{font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--lime); margin-bottom:8px;}
+  .moment h3{font-size:20px; color:#fff; margin-bottom:6px;}
+  .moment p{font-size:15px; color:var(--night-soft);}
+  .moment.big img{object-position:50% 40%;}
+  .moment.regolith img{object-position:50% 30%;}
+  @media (max-width:800px){ .moments{grid-template-columns:1fr;} }
+
+  /* world interest */
+  .world{text-align:center; padding-block:80px;}
+  .world h2{font-size:clamp(26px,3.6vw,40px); color:#fff; margin-bottom:26px;}
+  .regionrow{display:flex; flex-wrap:wrap; gap:10px; justify-content:center;}
+  .region{display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; border:1px solid var(--night-line); border-radius:999px; padding:10px 18px;}
+  .ping{width:8px; height:8px; border-radius:50%; background:var(--lime); position:relative;}
+  .ping::after{content:""; position:absolute; inset:-4px; border-radius:50%; border:1px solid var(--lime); animation:pingring 2.4s ease-out infinite;}
+  @keyframes pingring{0%{transform:scale(0.4); opacity:0.7;} 100%{transform:scale(1.9); opacity:0;}}
+
+  /* invest */
+  .invest{position:relative; overflow:hidden; isolation:isolate; padding-block:110px 150px;
+    background:radial-gradient(120% 70% at 50% 128%, rgba(2,173,109,0.55) 0%, rgba(20,70,67,0.55) 38%, rgba(10,23,38,0) 66%), var(--night);}
+  .invest::after{content:""; position:absolute; left:-10%; right:-10%; bottom:-70%; height:80%; border-radius:50%; border-top:2px solid rgba(158,208,218,0.55); box-shadow:0 -10px 60px rgba(2,173,109,0.35); z-index:-1;}
+  .invest h2{font-size:clamp(32px,5vw,60px); color:#fff; margin-bottom:16px;}
+  .invest p{color:var(--night-soft); max-width:46ch; margin-bottom:28px; font-size:18px;}
+  .copybtn{font-family:var(--font-body); font-size:14px; font-weight:600; border:1.5px solid var(--night-line); background:transparent; color:var(--night-ink); border-radius:999px; padding:13px 20px; cursor:pointer;}
+  .copybtn:hover{border-color:var(--night-soft);}
+
+  footer{border-top:1px solid var(--night-line); padding-block:36px 50px; font-size:13.5px; color:var(--night-soft);}
+  .footrow{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+  footer a{color:var(--night-soft); text-underline-offset:3px;} footer a:hover{color:#fff;}
+
+  .moments.three{grid-template-columns:1.3fr 1fr 1fr;}
+  @media (max-width:980px){ .moments.three{grid-template-columns:1fr 1fr;} .moments.three .moment.big{grid-column:span 2;} }
+  @media (max-width:640px){ .moments.three{grid-template-columns:1fr;} .moments.three .moment.big{grid-column:auto;} }
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}
+  .no-js .reveal{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1; transform:none; transition:none;}
+    *{animation:none !important;}
+    .tile > video, .tile > img{transition:none;}
+  }
+
+  /* minimal hero type (Lasse, 11 Nov): smaller text so the video carries the screen */
+  .hero h1{font-size:clamp(28px,3.6vw,50px); max-width:20ch; margin-bottom:16px;}
+  .hero .pill{margin-bottom:14px;}
+  .goals{gap:8px 22px; margin-bottom:22px;}
+  .goals h2{font-size:clamp(13.5px,1.1vw,15px);}
+  .hero .btn{font-size:14px; padding:11px 20px;}
+</style>
+<script data-goatcounter="https://erletek.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body class="no-js">
+<header class="site" id="top">
+  <div class="navrow wrap">
+    <a class="logo" href="da.html" aria-label="ERLEtek home">
+      <svg viewBox="336 326 420 370" aria-hidden="true"><g fill="none" stroke="#02ad6d" stroke-width="16" stroke-linejoin="miter"><path d="M652 676 H450 L352 509 L450 342 H643 L740 509 H548"/><path d="M523 470 L548 509 L523 548"/></g></svg>
+      <span class="wordmark"><span class="erle">ERLE</span><span class="tek">tek</span></span>
+    </a>
+    <nav class="links">
+      <a class="anchor" href="#tracks">Spor</a>
+      <a class="anchor" href="#path">Vejen</a>
+      <a class="anchor" href="#invest">Invester</a>
+      <a class="backlink" href="da.html">&larr; erletek.io</a>
+      <a class="langswitch" href="beyond-earth.html" hreflang="en" lang="en">English</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO: Roskilde test build, 29 Oct 2026 -->
+  <section class="hero">
+    <img class="poster" src="be-hero-poster.jpg" alt="">
+    <video autoplay muted loop playsinline preload="auto" poster="be-hero-poster.jpg" aria-hidden="true">
+      <source src="be-hero.mp4" type="video/mp4">
+    </video>
+    <div class="wrap">
+      <span class="pill">Ud over Jorden</span>
+      <h1>Robotter på Jorden. <span class="hl">Næste stop: Månen.</span></h1>
+      <div class="goals">
+        <h2>Byg med det, der er på stedet</h2>
+        <h2>Færre mandetimer på pladsen</h2>
+        <h2>Mange robotter, én konstruktion</h2>
+      </div>
+      <div class="ctarow">
+        <a class="btn lime" href="da.html#print">Se den printe</a>
+        <a class="btn ghost" href="#invest">Tal med os</a>
+      </div>
+    </div>
+    <div class="earthfade"></div>
+    <span class="scrollhint">Scroll</span>
+  </section>
+
+  <!-- THREE TRACKS -->
+  <section id="tracks">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>Én maskine, tre spor.</h2>
+        <p>En del af ESA BIC Denmark.</p>
+      </div>
+      <div class="tiles">
+        <article class="tile reveal">
+          <video muted loop playsinline preload="none" poster="be-earth-poster.jpg" data-inview aria-hidden="true">
+            <source src="be-earth.mp4" type="video/mp4">
+          </video>
+          <div class="cap">
+            <span class="tag done">I dag</span>
+            <h3>Print på pladsen</h3>
+            <p>En 11 m lang mur i Roskilde, printet på 100 minutter.</p>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <img src="moon-layers.jpg" alt="Nærbillede af et testprint i regolit-simulant med lagene fra hver passage." loading="lazy">
+          <div class="cap">
+            <span class="tag done">Testet</span>
+            <h3>Regolit</h3>
+            <p>Printet med månelignende materiale.</p>
+          </div>
+        </article>
+        <article class="tile swarm reveal">
+          <svg viewBox="0 0 300 220" aria-hidden="true" id="hive"></svg>
+          <div class="cap">
+            <span class="tag">På sigt</span>
+            <h3>Robot-bistaden</h3>
+            <p><em>Erle</em> betyder bi på baskisk. En sværm af robotter, der bygger én konstruktion sammen.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOMENTS -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head reveal"><h2>Øjeblikke.</h2></div>
+      <div class="moments">
+        <article class="moment big reveal">
+          <img src="esa-event.jpg" alt="ERLEtek præsenterer sin printer for Kong Frederik X, ESA-astronaut Andreas Mogensen og minister Christina Egelund ved ESA’s Space for Inspiration-event i København." loading="lazy">
+          <div class="body">
+            <div class="date">September 2026 · København</div>
+            <h3>Space for Inspiration med ESA</h3>
+            <p>Kongens delegation, astronaut Andreas Mogensen og minister Christina Egelund kom forbi.</p>
+          </div>
+        </article>
+        <article class="moment regolith reveal">
+          <img src="machine-extrusion.jpg" alt="Robottens dyse lægger et nyt lag beton på en mur." loading="lazy">
+          <div class="body">
+            <div class="date">ESA BIC Denmark</div>
+            <h3>Støttet af ESA’s inkubator</h3>
+            <p>Vi tester vores vibrationsprint til byggeri med lokalt materiale.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATH -->
+  <section id="path">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>Vejen væk fra Jorden.</h2>
+      </div>
+      <div class="path reveal">
+        <div class="step done"><span class="when">Klaret</span><h3>Printet og vandtestet i Roskilde</h3></div>
+        <div class="step done"><span class="when">Klaret</span><h3>Test med regolit-simulant</h3></div>
+        <div class="step"><span class="when">Næste</span><h3>Test i rummiljø</h3></div>
+        <div class="step"><span class="when">På sigt</span><h3>Robotsværme uden for Jorden</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORLD -->
+  <section class="world">
+    <div class="wrap reveal">
+      <h2>Interesse indtil videre fra</h2>
+      <div class="regionrow">
+        <span class="region"><span class="ping"></span>Europa</span>
+        <span class="region"><span class="ping"></span>Nordamerika</span>
+        <span class="region"><span class="ping"></span>Japan</span>
+        <span class="region"><span class="ping"></span>Australien</span>
+        <span class="region"><span class="ping"></span>Afrika</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVEST -->
+  <section class="invest" id="invest">
+    <div class="wrap reveal">
+      <span class="pill">Investering</span>
+      <h2>Vær med fra start.</h2>
+      <p>Vi rejser kapital for at gøre robotten kommercielt klar i 2028, med pilotprojekter i 2027.</p>
+      <div class="ctarow">
+        <a class="btn lime" href="mailto:lasse@erletek.io?subject=ERLEtek%3A%20investorinteresse">Skriv til Lasse</a>
+        <button class="copybtn" type="button" data-copy="lasse@erletek.io">Kopiér e-mail</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footrow">
+    <span>© 2026 ERLEtek ApS</span>
+    <span><a href="https://www.linkedin.com/company/erle-tek/">LinkedIn</a> · <a href="da.html">&larr; Tilbage til erletek.io</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.body.classList.remove('no-js');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // header turns solid after the hero
+  var hdr = document.querySelector('header.site');
+  var onScroll = function(){ hdr.classList.toggle('solid', window.scrollY > 40); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // hero video: pause for reduced motion
+  var hv = document.querySelector('.hero video');
+  if(reduce && hv){ hv.pause(); hv.removeAttribute('autoplay'); }
+
+  // reveal on scroll + play tile videos only while visible
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+    var vo = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        var v = e.target;
+        if(e.isIntersecting && !reduce){ try{ v.play(); }catch(err){} } else { v.pause(); }
+      });
+    }, {threshold:0.35});
+    document.querySelectorAll('video[data-inview]').forEach(function(v){ vo.observe(v); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // beehive: hex grid where cells fill in sequence, with "robots" moving between them
+  var svg = document.getElementById('hive');
+  if(svg){
+    var ns='http://www.w3.org/2000/svg', r=16, w=Math.sqrt(3)*r, h=1.5*r, cols=9, rows=6, k=0;
+    for(var y=0;y<rows;y++){
+      for(var x=0;x<cols;x++){
+        var cx = 22 + x*w + (y%2 ? w/2 : 0), cy = 26 + y*h, pts=[];
+        for(var i=0;i<6;i++){ var a=Math.PI/180*(60*i-30); pts.push((cx+(r-2)*Math.cos(a)).toFixed(1)+','+(cy+(r-2)*Math.sin(a)).toFixed(1)); }
+        var p=document.createElementNS(ns,'polygon'); p.setAttribute('points',pts.join(' '));
+        var inShape = (y>=1 && y<=4 && x>=1 && x<=7);
+        p.setAttribute('class','cell'+(inShape?' on':''));
+        if(inShape){ p.style.animationDelay = ((k++ * 0.09) % 3).toFixed(2)+'s'; }
+        svg.appendChild(p);
+      }
+    }
+    [[0,0],[1,2],[2,4]].forEach(function(b,i){
+      var c=document.createElementNS(ns,'circle'); c.setAttribute('r','4'); c.setAttribute('class','bot');
+      var m=document.createElementNS(ns,'animateMotion');
+      m.setAttribute('dur',(7+i*2)+'s'); m.setAttribute('repeatCount','indefinite');
+      var y0 = 26 + (1+i*1.5)*h;
+      m.setAttribute('path','M'+(22+w)+','+y0+' L'+(22+7*w)+','+y0+' L'+(22+w)+','+y0);
+      if(!reduce) c.appendChild(m); else { c.setAttribute('cx',22+w*(2+i*2)); c.setAttribute('cy',y0); }
+      svg.appendChild(c);
+    });
+  }
+
+  // copy email
+  document.querySelectorAll('[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var t=btn.getAttribute('data-copy'), old=btn.textContent;
+      try{ navigator.clipboard.writeText(t).then(function(){ btn.textContent='Kopieret'; setTimeout(function(){ btn.textContent=old; },1500); }); }catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>
